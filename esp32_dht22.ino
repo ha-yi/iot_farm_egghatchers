@@ -24,6 +24,7 @@
 DHTesp dht;
 pthread_t threads[5];
 int motorPin = 32;
+int pinHeater = 12;
 bool listen = true;
 
 bool stopTemp = false;
@@ -87,6 +88,13 @@ void *readTemp(void *i) {
   while(listen) {
     float t = dht.getTemperature();
     if (!isnan(t)) temperature = t;
+    if (temperature <38) {
+      Serial.println("HEATER ON");
+      digitalWrite(pinHeater, HIGH);
+    } else {
+      Serial.println("HEATER OFF");
+      digitalWrite(pinHeater, LOW);
+    }
     delay(1000);
   }
   stopTemp = true;
